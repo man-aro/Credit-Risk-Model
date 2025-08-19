@@ -7,6 +7,7 @@ Created on Tue Aug 19 21:24:01 2025
 
 import streamlit as st
 import pandas as pd
+import numpy as np
 
 st.title('Credit Risk Models')
 st.write('Author: Manish Rajkumar Arora')
@@ -111,4 +112,5 @@ else:
     
     
     
+
 
