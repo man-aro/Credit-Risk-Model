@@ -108,7 +108,7 @@ elif score == 'Ohlson O-Score':
                                 'Ohlson_G': 'FFO/TL', 'Ohlson_H':'Y', 'Ohlson_I': 'NI Ratio'}, inplace = True)
     
     Ohlson_DF_Display = Ohlson_DF.apply(lambda s: s.apply('{0:.2f}'.format))
-    X = '{:.2e}'.format(Ohlson_DF_Display["Ohlson_A"])
+    X = '{:.2e}'.format(Ohlson_DF_Display["Ohlson_A"].values)
     Ohlson_DF_Display["Ohlson_A"] = X
     
     st.dataframe(Ohlson_DF_Display, use_container_width = True)    
@@ -118,4 +118,5 @@ else:
     
     
     
+
 
