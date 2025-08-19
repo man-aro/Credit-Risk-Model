@@ -122,8 +122,8 @@ elif score == 'Ohlson O-Score':
     
     Ohlson_DF_T = Ohlson_DF_Format.T
     Ohlson_DF_T.rename(columns= {Ohlson_DF_T.columns[0]:' '}, inplace = True)
-    Ohlson_DF_T1 = Altman_DF_T.iloc[:6]
-    Ohlson_DF_T2 = Altman_DF_T.iloc[6:]
+    Ohlson_DF_T1 = Ohlson_DF_T.iloc[:6]
+    Ohlson_DF_T2 = Ohlson_DF_T.iloc[6:]
     
     Ohlson_col1, Ohlson_col2 = st.columns(2)
     with Ohlson_col1:
