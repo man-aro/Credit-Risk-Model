@@ -112,12 +112,13 @@ elif score == 'Ohlson O-Score':
     
     
     
-    st.dataframe(Ohlson_DF_Display.reset_index(drop=True), use_container_width = True)    
+    st.dataframe(Ohlson_DF_Display, use_container_width = True)    
         
 else: 
     st.print('Please Select an Credit Score Model.')
     
     
     
+
 
 
