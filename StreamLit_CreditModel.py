@@ -129,11 +129,12 @@ elif score == 'Ohlson O-Score':
     with Ohlson_col1:
         st.dataframe(Ohlson_DF_T1)
     with Ohlson_col2:
-        st.dataframe(Ohlson_DF_T2,use_container_width = False)     
+        st.dataframe(Ohlson_DF_T2)     
 else: 
     st.print('Please Select an Credit Score Model.')
     
     
     
+
 
 
