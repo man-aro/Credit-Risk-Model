@@ -94,6 +94,7 @@ if score == 'Altman Z-Score':
                                 'Altman_D': 'MktCap/TL', 'Altman_E':'Sales/TA'}, inplace = True)
     
     Altman_DF_Display = Altman_DF.apply(lambda s: s.apply('{0:.2f}'.format))
+    Altman_DF_Display.reset_index(drop=True)
     st.dataframe(Altman_DF_Display, use_container_width = True)
     
 elif score == 'Ohlson O-Score':
@@ -109,7 +110,7 @@ elif score == 'Ohlson O-Score':
     
     Ohlson_DF_Display = Ohlson_DF.apply(lambda s: s.apply('{0:.2f}'.format))
     Ohlson_DF_Display["TA/GNP"] = Ohlson_DF["TA/GNP"].apply(lambda x: f"{x:.2e}")
-    
+    Ohlson_DF_Display.reset_index(drop=True)
     st.dataframe(Ohlson_DF_Display, use_container_width = True)    
         
 else: 
@@ -117,7 +118,4 @@ else:
     
     
     
-
-
-
 
