@@ -125,11 +125,16 @@ elif score == 'Ohlson O-Score':
     Ohlson_DF_T1 = Ohlson_DF_T.iloc[:6]
     Ohlson_DF_T2 = Ohlson_DF_T.iloc[6:]
     
+    O_col1 = Ohlson_DF_T1.style.set_properties(**{'text-align': 'center'})
+    O_col2 = Ohlson_DF_T2.style.set_properties(**{'text-align': 'center'})
+    
+    
+    
     Ohlson_col1, Ohlson_col2 = st.columns(2)
     with Ohlson_col1:
-        st.dataframe(Ohlson_DF_T1)
+        st.dataframe(O_col1)
     with Ohlson_col2:
-        st.dataframe(Ohlson_DF_T2)   
+        st.dataframe(O_col2)   
 else: 
     st.print('Please Select an Credit Score Model.')
     
