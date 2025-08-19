@@ -16,15 +16,48 @@ url_CreditModel = "https://raw.githubusercontent.com/man-aro/Credit-Risk-Model/m
 url_KMVData = "https://raw.githubusercontent.com/man-aro/Credit-Risk-Model/tree/main/KMV_Merton/"
 
 Credit_Model_Data = pd.read_csv(url_CreditModel)
-Credit_Model_Data.columns
+
 stock = st.selectbox("Select a Stock*: ", ('AAPL', 'TSLA', 'AMZN', 'MSFT', 'NVDA', 'GOOGL', 'META', 'NFLX', 'JPM', 'V', 'BAC', 'AMD', 'PYPL', 'DIS', 'T', 'PFE', 'COST', 'INTC', 'KO', 'TGT'))
 
 #Data Summary: Based on Selected Stock
-Credit_Score_Data = Credit_Model_Data[Credit_Model_Data['symbol'] == stock]
-Relevant_Years = Credit_Score_Data['Year'].values
+Stock_Data = Credit_Model_Data[Credit_Model_Data['symbol'] == stock]
+Relevant_Years = Stock_Data['Year'].values
 
-stock = st.selectbox("Select a Stock*: ", (Relevant_Years))
+year = st.selectbox("Select a Year*: ", (Relevant_Years))
 
+#%%Relevant Financial Data Summary
+
+st.write("Financial Data ($)")
+Stock_Year = Stock_Data[Stock_Data['Year'] == year] #Important for the rest
+
+
+Stock_Year_Accounting_Data =  Stock_Year[['retainedEarnings', 'totalAssets', 
+                                          'totalLiabilities','totalCurrentAssets', 'totalCurrentLiabilities', 
+                                          'shortTermDebt','longTermDebt', 'workingCapital', 'revenue', 'ebit',
+                                          'depreciationAndAmortization', 'netIncome', 
+                                          'deferredIncomeTax', 'marketCapitalization', 'numberOfShares']]
+Stock_Year_Accounting_Data.rename(columns = {'retainedEarnings': 'Retained Earnings', 'totalAssets': 'Total Assets', 
+                                             'totalLiabilities': 'Total Liabilities', 'totalCurrentAssets': 'Total Current Assets',
+                                             'totalCurrentLiabilities': 'Total Current Liabilities', 'shortTermDebt': 'Short Term Debt',
+                                             'longTermDebt': 'Long Term Debt', 'workingCapital': 'Working Capital', 
+                                             'revenue': 'Sales', 'ebit': 'EBIT', 
+                                             'depreciationAndAmortization': 'Depreciation and Amortization', 
+                                             'netIncome': 'Net Income', 'deferredIncomeTax': 'Deferred Income Tax', 
+                                             'marketCapitalization': 'Market Capitalization', 'numberOfShares': 'Number of Shares'
+                                             }, inplace = True)
+
+#SYAD = Stock Year Accounting Data
+SYAD_DF = Stock_Year_Accounting_Data.T.apply(lambda s: s.apply('{0:.2e}'.format))
+SYAD_DF.rename(columns= {0:'Value ($)'}, inplace = True)
+
+SYAD_DF_1 = SYAD_DF.iloc[:8]
+SYAD_DF_2 = SYAD_DF.iloc[8:]
+
+SYAD_col1, SYAD_col2 = st.columns(2)
+with SYAD_col1:
+    st.dataframe(SYAD_DF_1, use_container_width = True)
+with SYAD_col2:
+    st.dataframe(SYAD_DF_2, use_container_width = True)
 
 
 
