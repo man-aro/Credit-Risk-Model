@@ -88,7 +88,7 @@ def Prob(X):
 
 if score == 'Altman Z-Score':
     Altman_DF = Stock_Year[['Altman_A', 'Altman_B', 'Altman_C', 'Altman_D',
-                            'Altman_E']].apply(lambda s: s.apply('{0:.2f}'.format))
+                            'Altman_E']]
     Altman_DF['Z-Score'] = Altman_DF.apply(lambda row: AltmanZScore(row['Altman_A'], row['Altman_B'], 
                                                                  row['Altman_C'], row['Altman_D'], 
                                                                  row['Altman_E']), axis = 1)
@@ -98,7 +98,7 @@ if score == 'Altman Z-Score':
 elif score == 'Ohlson O-Score':
     Ohlson_DF = Stock_Year[['Ohlson_A', 'Ohlson_B', 'Ohlson_C', 'Ohlson_D',
                             'Ohlson_E', 'Ohlson_F', 'Ohlson_G', 'Ohlson_H', 
-                            'Ohlson_I']].apply(lambda s: s.apply('{0:.2f}'.format))
+                            'Ohlson_I']]
     Ohlson_DF['O-Score'] = Ohlson_DF.apply(lambda row: OhlsonOScore(row['Ohlson_A'], row['Ohlson_B'], row['Ohlson_C'], row['Ohlson_D'], row['Ohlson_E'], 
                                                                  row['Ohlson_F'], row['Ohlson_G'], row['Ohlson_H'], row['Ohlson_I']), axis = 1)
     Ohlson_DF['Default Prob'] = Ohlson_DF.apply(lambda row: Prob(row['Ohlson_O_Score']), axis = 1)
@@ -112,5 +112,6 @@ else:
     
     
     
+
 
 
