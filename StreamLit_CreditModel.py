@@ -17,17 +17,16 @@ url_KMVData = "https://raw.githubusercontent.com/man-aro/Credit-Risk-Model/tree/
 
 Credit_Model_Data = pd.read_csv(url_CreditModel)
 
-stock = st.selectbox("Select a Stock*: ", ('AAPL', 'TSLA', 'AMZN', 'MSFT', 'NVDA', 'GOOGL', 'META', 'NFLX', 'JPM', 'V', 'BAC', 'AMD', 'PYPL', 'DIS', 'T', 'PFE', 'COST', 'INTC', 'KO', 'TGT'))
+stock = st.selectbox("Select a Stock: ", ('AAPL', 'TSLA', 'AMZN', 'MSFT', 'NVDA', 'GOOGL', 'META', 'NFLX', 'JPM', 'V', 'BAC', 'AMD', 'PYPL', 'DIS', 'T', 'PFE', 'COST', 'INTC', 'KO', 'TGT'))
 
 #Data Summary: Based on Selected Stock
 Stock_Data = Credit_Model_Data[Credit_Model_Data['symbol'] == stock]
 Relevant_Years = Stock_Data['Year'].values
 
-year = st.selectbox("Select a Year*: ", (Relevant_Years))
+year = st.selectbox("Select a Year: ", (Relevant_Years))
 
 #%%Relevant Financial Data Summary
-
-st.write("Financial Data ($)")
+st.write("Financial Data Summary")
 Stock_Year = Stock_Data[Stock_Data['Year'] == year] #Important for the rest
 
 
@@ -35,7 +34,7 @@ Stock_Year_Accounting_Data =  Stock_Year[['retainedEarnings', 'totalAssets',
                                           'totalLiabilities','totalCurrentAssets', 'totalCurrentLiabilities', 
                                           'shortTermDebt','longTermDebt', 'workingCapital', 'revenue', 'ebit',
                                           'depreciationAndAmortization', 'netIncome', 
-                                          'deferredIncomeTax', 'marketCapitalization', 'numberOfShares']]
+                                          'deferredIncomeTax', 'marketCapitalization', 'numberOfShares', 'GNP_PriceIndexLevel']]
 Stock_Year_Accounting_Data.rename(columns = {'retainedEarnings': 'Retained Earnings', 'totalAssets': 'Total Assets', 
                                              'totalLiabilities': 'Total Liabilities', 'totalCurrentAssets': 'Total Current Assets',
                                              'totalCurrentLiabilities': 'Total Current Liabilities', 'shortTermDebt': 'Short Term Debt',
@@ -43,7 +42,8 @@ Stock_Year_Accounting_Data.rename(columns = {'retainedEarnings': 'Retained Earni
                                              'revenue': 'Sales', 'ebit': 'EBIT', 
                                              'depreciationAndAmortization': 'Depreciation and Amortization', 
                                              'netIncome': 'Net Income', 'deferredIncomeTax': 'Deferred Income Tax', 
-                                             'marketCapitalization': 'Market Capitalization', 'numberOfShares': 'Number of Shares'
+                                             'marketCapitalization': 'Market Capitalization', 'numberOfShares': 'Number of Shares',
+                                             'GNP_PriceIndexLevel':'GNP (Index = 1968)'
                                              }, inplace = True)
 
 #SYAD = Stock Year Accounting Data
@@ -55,31 +55,60 @@ SYAD_DF_2 = SYAD_DF.iloc[8:]
 
 SYAD_col1, SYAD_col2 = st.columns(2)
 with SYAD_col1:
-    st.markdown(
-    """
-    <style>
-    table td, table th {
-        text-align: center !important;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
     st.dataframe(SYAD_DF_1, use_container_width = True)
 with SYAD_col2:
-    st.markdown(
-    """
-    <style>
-    table td, table th {
-        text-align: center !important;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
     st.dataframe(SYAD_DF_2, use_container_width = True)
 
 
 
+#%%Credit Score Data and Computation
 
-st.write("Preview of Data")
+st.write("Select Credit Score")
+
+score = st.selectbox("Select Credit Score: ", ('Altman Z-Score', 'Ohlson O-Score'))
+
+Score_DF = Stock_Year[['Altman_A', 'Altman_B', 'Altman_C', 'Altman_D', 'Altman_E', 
+                       'Ohlson_A', 'Ohlson_B', 'Ohlson_C', 'Ohlson_D', 'Ohlson_E', 'Ohlson_F', 
+                       'Ohlson_G', 'Ohlson_H', 'Ohlson_I']]
+
+def AltmanZScore(A, B, C, D, E):
+    Z = 1.2*A + 1.4*B + 3.3*C + 0.6*D + 1.0*E
+    return Z 
+
+def OhlsonOScore(A, B, C, D, E, F, G, H, I):
+    import numpy as np
+    O_Score = -1.32 -0.407*np.log(A) + 6.03*B - 1.43*C + 0.0757*D - 1.72*E - 2.37*F -1.83*G + 0.285*H - 0.521*I
+    return O_Score
+
+def Prob(X):
+    import numpy as np
+    Prob = np.exp(X)/(1 + np.exp(X))
+    return Prob
+
+if score == 'Altman Z-Score':
+    Altman_DF = Stock_Year[['Altman_A', 'Altman_B', 'Altman_C', 'Altman_D',
+                            'Altman_E']].apply(lambda s: s.apply('{0:.2f}'.format))
+    Altman_DF['Z-Score'] = Altman_DF.apply(lambda row: AltmanZScore(row['Altman_A'], row['Altman_B'], 
+                                                                 row['Altman_C'], row['Altman_D'], 
+                                                                 row['Altman_E']), axis = 1)
+    Altman_DF.rename(columns = {'Altman_A': 'WC/TA', 'Altman_B':'RE/TA', 'Altman_C':'EBIT/TA', 
+                                'Altman_D': 'MktCap/TL', 'Altman_E':'Sales/TA'}, inplace = True)
+    st.dataframe(Altman_DF, use_container_width = True)
+elif score == 'Ohlson O-Score':
+    Ohlson_DF = Stock_Year[['Ohlson_A', 'Ohlson_B', 'Ohlson_C', 'Ohlson_D',
+                            'Ohlson_E', 'Ohlson_F', 'Ohlson_G', 'Ohlson_H', 
+                            'Ohlson_I']].apply(lambda s: s.apply('{0:.2f}'.format))
+    Ohlson_DF['O-Score'] = Ohlson_DF.apply(lambda row: OhlsonOScore(row['Ohlson_A'], row['Ohlson_B'], row['Ohlson_C'], row['Ohlson_D'], row['Ohlson_E'], 
+                                                                 row['Ohlson_F'], row['Ohlson_G'], row['Ohlson_H'], row['Ohlson_I']), axis = 1)
+    Ohlson_DF['Default Prob'] = Ohlson_DF.apply(lambda row: Prob(row['Ohlson_O_Score']), axis = 1)
+    Ohlson_DF.rename(columns = {'Ohlson_A':'TA/GNP', 'Ohlson_B':'TL/TA', 'Ohlson_C':'WC/TA', 
+                                'Ohlson_D': 'CL/CA', 'Ohlson_E':'X', 'Ohlson_F':'NI/TA',
+                                'Ohlson_G': 'FFO/TL', 'Ohlson_H':'Y', 'Ohlson_I': 'NI Ratio'}, inplace = True)
+    st.dataframe(Ohlson_DF, use_container_width = True)    
+        
+else: 
+    st.print('Please Select an Credit Score Model.')
+    
+    
+    
+
