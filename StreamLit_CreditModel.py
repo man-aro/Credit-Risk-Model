@@ -48,15 +48,35 @@ Stock_Year_Accounting_Data.rename(columns = {'retainedEarnings': 'Retained Earni
 
 #SYAD = Stock Year Accounting Data
 SYAD_DF = Stock_Year_Accounting_Data.T.apply(lambda s: s.apply('{0:.2e}'.format))
-SYAD_DF.rename(columns= {0:'Value ($)'}, inplace = True)
+SYAD_DF.rename(columns= {SYAD_DF.columns[0]:'Value ($)'}, inplace = True)
 
 SYAD_DF_1 = SYAD_DF.iloc[:8]
 SYAD_DF_2 = SYAD_DF.iloc[8:]
 
 SYAD_col1, SYAD_col2 = st.columns(2)
 with SYAD_col1:
+    st.markdown(
+    """
+    <style>
+    table td, table th {
+        text-align: center !important;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
     st.dataframe(SYAD_DF_1, use_container_width = True)
 with SYAD_col2:
+    st.markdown(
+    """
+    <style>
+    table td, table th {
+        text-align: center !important;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
     st.dataframe(SYAD_DF_2, use_container_width = True)
 
 
