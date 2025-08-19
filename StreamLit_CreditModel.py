@@ -117,10 +117,10 @@ elif score == 'Ohlson O-Score':
                                 'Ohlson_D': 'CL/CA', 'Ohlson_E':'X', 'Ohlson_F':'NI/TA',
                                 'Ohlson_G': 'FFO/TL', 'Ohlson_H':'Y', 'Ohlson_I': 'NI Ratio'}, inplace = True)
     
-    Ohlson_DF = Ohlson_DF.apply(lambda s: s.apply('{0:.2f}'.format))
-    Ohlson_DF["TA/GNP"] = Ohlson_DF["TA/GNP"].apply(lambda x: f"{x:.2e}")
+    Ohlson_DF_Format = Ohlson_DF.apply(lambda s: s.apply('{0:.2f}'.format))
+    Ohlson_DF_Format["TA/GNP"] = Ohlson_DF["TA/GNP"].apply(lambda x: f"{x:.2e}")
     
-    Ohlson_DF_T = Ohlson_DF.T
+    Ohlson_DF_T = Ohlson_DF_Format.T
     Ohlson_DF_T.rename(columns= {Ohlson_DF_T.columns[0]:' '}, inplace = True)
     Ohlson_DF_T1 = Altman_DF_T.iloc[:6]
     Ohlson_DF_T2 = Altman_DF_T.iloc[6:]
