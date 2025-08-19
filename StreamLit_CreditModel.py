@@ -83,7 +83,6 @@ def OhlsonOScore(A, B, C, D, E, F, G, H, I):
 def Prob(X):
     Prob = np.exp(X)/(1 + np.exp(X))
     return Prob * 100
-
 if score == 'Altman Z-Score':
     Altman_DF = Stock_Year[['Altman_A', 'Altman_B', 'Altman_C', 'Altman_D',
                             'Altman_E']]
@@ -108,13 +107,13 @@ elif score == 'Ohlson O-Score':
                                 'Ohlson_G': 'FFO/TL', 'Ohlson_H':'Y', 'Ohlson_I': 'NI Ratio'}, inplace = True)
     
     Ohlson_DF_Display = Ohlson_DF.apply(lambda s: s.apply('{0:.2f}'.format))
-    Ohlson_DF_Display["Ohlson_A"] = Ohlson_DF_Display["Ohlson_A"].apply(lambda x: f"{x:.2e}")
+    X = Ohlson_DF_Display["Ohlson_A"].apply(lambda x: f"{x:.2e}")
+    Ohlson_DF_Display["Ohlson_A"] = X
     
     st.dataframe(Ohlson_DF_Display, use_container_width = True)    
         
 else: 
     st.print('Please Select an Credit Score Model.')
     
-    
-    
+
 
