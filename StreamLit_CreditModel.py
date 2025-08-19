@@ -14,7 +14,7 @@ st.write('Author: Manish Rajkumar Arora')
 st.write("DataSources: FRED, YahooFinance, FMP.")
 
 url_CreditModel = "https://raw.githubusercontent.com/man-aro/Credit-Risk-Model/main/Dataset_Relevant_CreditModel.csv"
-url_KMVData = "https://raw.githubusercontent.com/man-aro/Credit-Risk-Model/tree/main/KMV_Merton/"
+
 
 Credit_Model_Data = pd.read_csv(url_CreditModel)
 
@@ -133,4 +133,13 @@ else:
     
     
     
+#%%KMV-Merton Model
 
+score = st.selectbox("Select Iterations for KMV Merton Model: ", (10, 20 ,30, 40 ,50))
+
+url_KMVData = "https://raw.githubusercontent.com/man-aro/Credit-Risk-Model/tree/main/KMV_Merton/" + stock + "/KMV_Merton_Data_" + stock + "_" + str(year) + ".csv"
+
+data = pd.read_csv(url_KMVData)
+
+stock_summary = data['Close'].describe()
+st.dataframe(stock_summary)
