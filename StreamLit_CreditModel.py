@@ -101,7 +101,7 @@ elif score == 'Ohlson O-Score':
                             'Ohlson_I']]
     Ohlson_DF['O-Score'] = Ohlson_DF.apply(lambda row: OhlsonOScore(row['Ohlson_A'], row['Ohlson_B'], row['Ohlson_C'], row['Ohlson_D'], row['Ohlson_E'], 
                                                                  row['Ohlson_F'], row['Ohlson_G'], row['Ohlson_H'], row['Ohlson_I']), axis = 1)
-    Ohlson_DF['Default Prob'] = Ohlson_DF.apply(lambda row: Prob(row['Ohlson_O_Score']), axis = 1)
+    Ohlson_DF['Default Prob'] = Ohlson_DF.apply(lambda row: Prob(row['O-Score']), axis = 1)
     Ohlson_DF.rename(columns = {'Ohlson_A':'TA/GNP', 'Ohlson_B':'TL/TA', 'Ohlson_C':'WC/TA', 
                                 'Ohlson_D': 'CL/CA', 'Ohlson_E':'X', 'Ohlson_F':'NI/TA',
                                 'Ohlson_G': 'FFO/TL', 'Ohlson_H':'Y', 'Ohlson_I': 'NI Ratio'}, inplace = True)
@@ -112,6 +112,7 @@ else:
     
     
     
+
 
 
 
