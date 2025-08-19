@@ -111,14 +111,11 @@ elif score == 'Ohlson O-Score':
     Ohlson_DF_Display = Ohlson_DF.apply(lambda s: s.apply('{0:.2f}'.format))
     Ohlson_DF_Display["TA/GNP"] = Ohlson_DF["TA/GNP"].apply(lambda x: f"{x:.2e}")
     Ohlson_DF_Display.reset_index(drop=True)
-    st.dataframe(Ohlson_DF_Display, use_container_width = True)    
-        
+    #st.dataframe(Ohlson_DF_Display, use_container_width = True)    
+    st.dataframe(Ohlson_DF_Display.to_numpy(), columns=Ohlson_DF_Display.columns, use_container_width=True)
 else: 
     st.print('Please Select an Credit Score Model.')
     
     
     
-
-
-
 
