@@ -137,7 +137,7 @@ else:
 
 score = st.selectbox("Select Iterations for KMV Merton Model: ", (10, 20 ,30, 40 ,50))
 
-url_KMVData = "https://raw.githubusercontent.com/man-aro/Credit-Risk-Model/tree/main/KMV_Merton/" + stock + "/KMV_Merton_Data_" + stock + "_" + str(year) + ".csv"
+url_KMVData = "https://raw.githubusercontent.com/man-aro/Credit-Risk-Model/main/KMV_Merton/" + stock + "/KMV_Merton_Data_" + stock + "_" + str(year) + ".csv"
 
 data = pd.read_csv(url_KMVData)
 
