@@ -95,15 +95,15 @@ if score == 'Altman Z-Score':
     
     Altman_DF = Altman_DF.apply(lambda s: s.apply('{0:.2f}'.format))
     Altman_DF_T = Altman_DF.T
-    
+    Altman_DF_T.rename(columns= {Altman_DF_T.columns[0]:' '}, inplace = True)
     Altman_DF_T1 = Altman_DF_T.iloc[:3]
     Altman_DF_T2 = Altman_DF_T.iloc[3:]
     
     Altman_col1, Altman_col2 = st.columns(2)
     with Altman_col1:
-        st.dataframe(Altman_DF_T1, use_container_width = True)
+        st.dataframe(Altman_DF_T1)
     with Altman_col2:
-        st.dataframe(Altman_DF_T2, use_container_width = True)
+        st.dataframe(Altman_DF_T2)
 
     
 elif score == 'Ohlson O-Score':
@@ -117,11 +117,19 @@ elif score == 'Ohlson O-Score':
                                 'Ohlson_D': 'CL/CA', 'Ohlson_E':'X', 'Ohlson_F':'NI/TA',
                                 'Ohlson_G': 'FFO/TL', 'Ohlson_H':'Y', 'Ohlson_I': 'NI Ratio'}, inplace = True)
     
-    Ohlson_DF_Display = Ohlson_DF.apply(lambda s: s.apply('{0:.2f}'.format))
-    Ohlson_DF_Display["TA/GNP"] = Ohlson_DF["TA/GNP"].apply(lambda x: f"{x:.2e}")
-    Ohlson_DF_Display.reset_index(drop=True)
-    st.dataframe(Ohlson_DF_Display, use_container_width = True)    
+    Ohlson_DF = Ohlson_DF.apply(lambda s: s.apply('{0:.2f}'.format))
+    Ohlson_DF["TA/GNP"] = Ohlson_DF["TA/GNP"].apply(lambda x: f"{x:.2e}")
     
+    Ohlson_DF_T = Ohlson_DF.T
+    Ohlson_DF_T.rename(columns= {Ohlson_DF_T.columns[0]:' '}, inplace = True)
+    Ohlson_DF_T1 = Altman_DF_T.iloc[:6]
+    Ohlson_DF_T2 = Altman_DF_T.iloc[6:]
+    
+    Ohlson_col1, Ohlson_col2 = st.columns(2)
+    with Ohlson_col1:
+        st.dataframe(Ohlson_DF_T1)
+    with Ohlson_col2:
+        st.dataframe(Ohlson_DF_T2)   
 else: 
     st.print('Please Select an Credit Score Model.')
     
