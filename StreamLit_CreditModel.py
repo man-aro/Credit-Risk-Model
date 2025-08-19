@@ -64,8 +64,6 @@ with SYAD_col2:
 
 #%%Credit Score Data and Computation
 
-st.write("Select Credit Score")
-
 score = st.selectbox("Select Credit Score: ", ('Altman Z-Score', 'Ohlson O-Score'))
 
 Score_DF = Stock_Year[['Altman_A', 'Altman_B', 'Altman_C', 'Altman_D', 'Altman_E', 
@@ -129,12 +127,10 @@ elif score == 'Ohlson O-Score':
     with Ohlson_col1:
         st.dataframe(Ohlson_DF_T1)
     with Ohlson_col2:
-        st.dataframe(Ohlson_DF_T2)     
+        st.dataframe(Ohlson_DF_T2)   
 else: 
     st.print('Please Select an Credit Score Model.')
     
     
     
-
-
 
