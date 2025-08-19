@@ -93,7 +93,7 @@ if score == 'Altman Z-Score':
     Altman_DF.rename(columns = {'Altman_A': 'WC/TA', 'Altman_B':'RE/TA', 'Altman_C':'EBIT/TA', 
                                 'Altman_D': 'MktCap/TL', 'Altman_E':'Sales/TA'}, inplace = True)
     
-    Altman_DF_Display = Altman_DF.apply(lambda s: s.apply('{0:.2e}'.format))
+    Altman_DF_Display = Altman_DF.apply(lambda s: s.apply('{0:.2f}'.format))
     st.dataframe(Altman_DF_Display.style.hide(axis="index"), use_container_width = True)
     
 elif score == 'Ohlson O-Score':
@@ -106,7 +106,9 @@ elif score == 'Ohlson O-Score':
     Ohlson_DF.rename(columns = {'Ohlson_A':'TA/GNP', 'Ohlson_B':'TL/TA', 'Ohlson_C':'WC/TA', 
                                 'Ohlson_D': 'CL/CA', 'Ohlson_E':'X', 'Ohlson_F':'NI/TA',
                                 'Ohlson_G': 'FFO/TL', 'Ohlson_H':'Y', 'Ohlson_I': 'NI Ratio'}, inplace = True)
-    Ohlson_DF_Display = Ohlson_DF.apply(lambda s: s.apply('{0:.2e}'.format))
+    Ohlson_DF['TA/GNP'] = Ohlson_DF['TA/GNP'].apply('{0:.2e}'.format)
+    Ohlson_DF_Display = Ohlson_DF.apply(lambda s: s.apply('{0:.2f}'.format))
+    
     
     st.dataframe(Ohlson_DF_Display.style.hide(axis="index"), use_container_width = True)    
         
