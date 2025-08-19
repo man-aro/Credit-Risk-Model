@@ -9,11 +9,21 @@ import streamlit as st
 import pandas as pd
 
 st.title('Credit Risk Models')
+st.write('Author: Manish Rajkumar Arora')
+st.write("DataSources: FRED, YahooFinance, FMP.")
 
-url_CreditModel = "https://github.com/man-aro/Credit-Risk-Model/blob/main/Dataset_Relevant_CreditModel.csv"
-url_KMVData = "https://github.com/man-aro/Credit-Risk-Model/tree/main/KMV_Merton."
+url_CreditModel = "https://raw.githubusercontent.com/man-aro/Credit-Risk-Model/main/Dataset_Relevant_CreditModel.csv"
+url_KMVData = "https://raw.githubusercontent.com/man-aro/Credit-Risk-Model/tree/main/KMV_Merton/"
 
-Credit_Model = pd.read_excel(url_CreditModel)
+Credit_Model = pd.read_csv(url_CreditModel)
+
+stock = st.selectbox("Select a Stock*: ", ('AAPL', 'TSLA', 'AMZN', 'MSFT', 'NVDA', 'GOOGL', 'META', 'NFLX', 'JPM', 'V', 'BAC', 'AMD', 'PYPL', 'DIS', 'T', 'PFE', 'COST', 'INTC', 'KO', 'TGT'))
+
+#Data Summary: Based on Selected Stock
+
+
+
+
 
 
 st.write("### Preview of Data")
