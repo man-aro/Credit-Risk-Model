@@ -77,14 +77,12 @@ def AltmanZScore(A, B, C, D, E):
     return Z 
 
 def OhlsonOScore(A, B, C, D, E, F, G, H, I):
-    import numpy as np
     O_Score = -1.32 -0.407*np.log(A) + 6.03*B - 1.43*C + 0.0757*D - 1.72*E - 2.37*F -1.83*G + 0.285*H - 0.521*I
     return O_Score
 
 def Prob(X):
-    import numpy as np
     Prob = np.exp(X)/(1 + np.exp(X))
-    return Prob
+    return Prob * 100
 
 if score == 'Altman Z-Score':
     Altman_DF = Stock_Year[['Altman_A', 'Altman_B', 'Altman_C', 'Altman_D',
@@ -94,25 +92,26 @@ if score == 'Altman Z-Score':
                                                                  row['Altman_E']), axis = 1)
     Altman_DF.rename(columns = {'Altman_A': 'WC/TA', 'Altman_B':'RE/TA', 'Altman_C':'EBIT/TA', 
                                 'Altman_D': 'MktCap/TL', 'Altman_E':'Sales/TA'}, inplace = True)
-    st.dataframe(Altman_DF, use_container_width = True)
+    
+    Altman_DF_Display = Altman_DF.apply(lambda s: s.apply('{0:.2e}'.format))
+    st.dataframe(Altman_DF.style.hide(axis="index"), use_container_width = True)
 elif score == 'Ohlson O-Score':
     Ohlson_DF = Stock_Year[['Ohlson_A', 'Ohlson_B', 'Ohlson_C', 'Ohlson_D',
                             'Ohlson_E', 'Ohlson_F', 'Ohlson_G', 'Ohlson_H', 
                             'Ohlson_I']]
     Ohlson_DF['O-Score'] = Ohlson_DF.apply(lambda row: OhlsonOScore(row['Ohlson_A'], row['Ohlson_B'], row['Ohlson_C'], row['Ohlson_D'], row['Ohlson_E'], 
                                                                  row['Ohlson_F'], row['Ohlson_G'], row['Ohlson_H'], row['Ohlson_I']), axis = 1)
-    Ohlson_DF['Default Prob'] = Ohlson_DF.apply(lambda row: Prob(row['O-Score']), axis = 1)
+    Ohlson_DF['Default Prob (%)'] = Ohlson_DF.apply(lambda row: Prob(row['O-Score']), axis = 1)
     Ohlson_DF.rename(columns = {'Ohlson_A':'TA/GNP', 'Ohlson_B':'TL/TA', 'Ohlson_C':'WC/TA', 
                                 'Ohlson_D': 'CL/CA', 'Ohlson_E':'X', 'Ohlson_F':'NI/TA',
                                 'Ohlson_G': 'FFO/TL', 'Ohlson_H':'Y', 'Ohlson_I': 'NI Ratio'}, inplace = True)
-    st.dataframe(Ohlson_DF, use_container_width = True)    
+    Ohlson_DF_Display = Ohlson_DF.apply(lambda s: s.apply('{0:.2f}'.format))
+    
+    st.dataframe(Ohlson_DF_Display.style.hide(axis="index"), use_container_width = True)    
         
 else: 
     st.print('Please Select an Credit Score Model.')
     
     
     
-
-
-
 
