@@ -95,7 +95,7 @@ if score == 'Altman Z-Score':
     
     Altman_DF_Display = Altman_DF.apply(lambda s: s.apply('{0:.2f}'.format))
     Altman_DF_Display.reset_index(inplace = True)
-    st.dataframe(Altman_DF_Display, use_container_width = True)
+    st.write(Altman_DF_Display, use_container_width = True)
     
 elif score == 'Ohlson O-Score':
     Ohlson_DF = Stock_Year[['Ohlson_A', 'Ohlson_B', 'Ohlson_C', 'Ohlson_D',
@@ -118,4 +118,5 @@ else:
     
     
     
+
 
