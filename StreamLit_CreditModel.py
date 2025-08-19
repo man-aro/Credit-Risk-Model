@@ -106,8 +106,8 @@ elif score == 'Ohlson O-Score':
     Ohlson_DF.rename(columns = {'Ohlson_A':'TA/GNP', 'Ohlson_B':'TL/TA', 'Ohlson_C':'WC/TA', 
                                 'Ohlson_D': 'CL/CA', 'Ohlson_E':'X', 'Ohlson_F':'NI/TA',
                                 'Ohlson_G': 'FFO/TL', 'Ohlson_H':'Y', 'Ohlson_I': 'NI Ratio'}, inplace = True)
-    Ohlson_DF_Display_1 = Ohlson_DF.format({"TA/GNP": "{:.2e}"})
-    Ohlson_DF_Display = Ohlson_DF_Display_1.apply(lambda s: s.apply('{0:.2f}'.format))
+   
+    Ohlson_DF_Display = Ohlson_DF.apply(lambda s: s.apply('{0:.2f}'.format))
     
     
     st.dataframe(Ohlson_DF_Display.reset_index(drop=True), use_container_width = True)    
