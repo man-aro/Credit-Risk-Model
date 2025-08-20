@@ -11,6 +11,7 @@ import numpy as np
 import scipy as sp
 from scipy.stats import norm
 from scipy.optimize import fsolve
+import matplotlib.pyplot as plt
 
 st.title('Credit Risk Models')
 st.write('Author: Manish Rajkumar Arora')
@@ -67,7 +68,7 @@ with SYAD_col2:
 
 #%%Credit Score Data and Computation
 
-score = st.selectbox("Select Credit Score: ", ('Altman Z-Score', 'Ohlson O-Score', 'KMV-Merton'))
+score = st.selectbox("Credit Model: ", ('Altman Z-Score', 'Ohlson O-Score', 'KMV-Merton'))
 
 Score_DF = Stock_Year[['Altman_A', 'Altman_B', 'Altman_C', 'Altman_D', 'Altman_E', 
                        'Ohlson_A', 'Ohlson_B', 'Ohlson_C', 'Ohlson_D', 'Ohlson_E', 'Ohlson_F', 
@@ -132,6 +133,7 @@ elif score == 'Ohlson O-Score':
     with Ohlson_col2:
         st.dataframe(Ohlson_DF_T2)   
 elif score == 'KMV-Merton': 
+    
     url_KMVData = "https://raw.githubusercontent.com/man-aro/Credit-Risk-Model/main/KMV_Merton/" + stock + "/KMV_Merton_Data_" + stock + "_" + str(year) + ".csv"
     
     KMVData = pd.read_csv(url_KMVData)
@@ -226,12 +228,31 @@ elif score == 'KMV-Merton':
     PD_Merton = norm.cdf(-(PD_A + PD_B)/PD_C)[0] * 100
     ProbDef_Merton = f"{PD_Merton:.2f}"
     
+    st.write("Optimisation Iterations = 50.")
+    st.write("Monte Carlo Simulations = 1000.")
     
-    
-    
-    
-    KMV_Results = pd.DataFrame([Annual_Drift, Annual_Sigma, IVA, ProbDef_Merton]).T
-    KMV_Results.rename(columns = {0:'Annual Drift', 1:'Annual Sigma', 2:'Asset Value', 3:'Merton Default Prob(%)'}, inplace = True)
+    def MonteCarlo(N, M, V0, mu, sigma, T, Strike_Price):
+        dt = T/N
+        dw = np.random.normal(0, 1, size = [N, M])
+        V = np.ones([N, M])
+        V[0] = V0
+        time = np.zeros([N,M])
+        time[0] = 0
+        for i in range(1,N):
+            V[i] = V[i-1,:]*np.exp((mu - 0.5*sigma**2)*dt + sigma*np.sqrt(dt)*dw[i-1,:])
+            time[i] = i*dt
+        
+        Prob_Default = ((V[-1] < Strike_Price).sum()/M) * 100
+        return Prob_Default
+
+    N = 253
+    M_MC = 1000
+
+    KMV_Prob_Default = MonteCarlo(N, M_MC, Initial_Asset_Value, A_MU, Sigma, T, Strike_Price)
+    KMV_Prob = f"{KMV_Prob_Default:.2f}"
+
+    KMV_Results = pd.DataFrame([Annual_Drift, Annual_Sigma, IVA, ProbDef_Merton, KMV_Prob]).T
+    KMV_Results.rename(columns = {0:'Annual Drift', 1:'Annual Sigma', 2:'Asset Value', 3:'Default Prob (%)', 4: 'MC Default Prob (%)'}, inplace = True)
     KMV_Results = KMV_Results.T
     KMV_Results.rename(columns = {0: ' '}, inplace = True)
     
@@ -243,12 +264,7 @@ elif score == 'KMV-Merton':
         st.dataframe(KMV_1)
     with KMV_col2:
         st.dataframe(KMV_2) 
-        
-    
-    
-    
-    
-    
+   
 else:
     st.print('Please Select an Credit Score Model.')
     
