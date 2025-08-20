@@ -1,0 +1,7 @@
+rstreamlit
+pandas
+matplotlib
+datetime
+yfinance
+statsmodels
+scipy
