@@ -230,7 +230,7 @@ elif score == 'KMV-Merton':
     
     
     
-    KMV_Results = pd.DataFrame([Annual_Drift, Annual_Sigma, IVA, PD_Merton]).T
+    KMV_Results = pd.DataFrame([Annual_Drift, Annual_Sigma, IVA, ProbDef_Merton]).T
     KMV_Results.rename(columns = {0:'Annual Drift', 1:'Annual Sigma', 2:'Asset Value', 3:'Merton Default Prob(%)'}, inplace = True)
     KMV_Results = KMV_Results.T
     KMV_Results.rename(columns = {0: ' '}, inplace = True)
