@@ -261,7 +261,7 @@ elif score == 'KMV-Merton':
     ax.axhline(Strike_Price, color="red", linestyle="--", label = 'Strike Price')
     ax.set_xlabel("Time", fontsize=15)
     ax.set_title(f"Asset Value Distribution: {stock} ({year})", fontsize=15)
-    ax.legend(loc = "lower left")
+    ax.legend(loc = "upper left")
     st.pyplot(fig)
 
 
