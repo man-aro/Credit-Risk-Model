@@ -252,17 +252,16 @@ elif score == 'KMV-Merton':
 
     V = MonteCarlo(N, M_MC, Initial_Asset_Value, A_MU, Sigma, T, Strike_Price)[1]
     time = MonteCarlo(N, M_MC, Initial_Asset_Value, A_MU, Sigma, T, Strike_Price)[2]
-    
-    mask = V[-1] < Strike_Price
-    VD = V[:, mask] 
-    
-    
-    fig = plt.figure(figsize = (10,6))
-    plt.plot(time, V, color = 'orange')
-    plt.plot(time, VD, color = 'black')
-    plt.axhline(Strike_Price, color = 'red')
-    plt.xlabel('Time', fontsize = 15)
-    plt.title('Asset Value Distribution: ' + stock + ' (' + str(year) + ')', fontsize = 15)
+  
+    fig, ax = plt.subplots(figsize=(10, 6))
+    for m in range(M_MC):
+        if V[-1, m] < Strike_Price:
+            ax.plot(time, V[:, m], color="black", alpha=0.4)   # defaulted path
+        else:
+            ax.plot(time, V[:, m], color="orange", alpha=0.4)  # survived path
+    ax.axhline(Strike_Price, color="red", linestyle="--", label="Default Barrier")
+    ax.set_xlabel("Time", fontsize=15)
+    ax.set_title(f"Asset Value Distribution: {stock} ({year})", fontsize=15)
 
     st.pyplot(fig)
 
