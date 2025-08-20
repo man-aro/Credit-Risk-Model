@@ -223,14 +223,13 @@ for m in range(1, M):
 Sigma = Sigma_Tt[-1]
 A_MU = Annual_MU[-1]
 Initial_Asset_Value = X[-1]
-IVA = Initial_Asset_Value.apply(lambda x: f"{x:.2f}")
+IVA = f"{Initial_Asset_Value:.2f}"
 
 PD_A = np.log(Initial_Asset_Value/Strike_Price)
 PD_B = (Rate - 0.5*Sigma**2)*T #d2
 PD_C = Sigma*np.sqrt(T)
 
 PD_Merton = norm.cdf(-(PD_A + PD_B)/PD_C)[0]
-
 
 
 
