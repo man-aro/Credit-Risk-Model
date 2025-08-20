@@ -245,7 +245,7 @@ elif score == 'KMV-Merton':
         return Prob_Default, V, time
 
     N = 253
-    M_MC = 5000
+    M_MC = 1000
 
     KMV_Prob_Default = MonteCarlo(N, M_MC, Initial_Asset_Value, A_MU, Sigma, T, Strike_Price)[0]
     KMV_Prob = f"{KMV_Prob_Default:.2f}"
