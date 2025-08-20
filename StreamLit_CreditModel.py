@@ -255,7 +255,7 @@ elif score == 'KMV-Merton':
     
     fig = plt.figure(figsize = (10,6))
     plt.plot(time, V, color = 'orange')
-    #plt.axhline(Strike_Price, color = 'black')
+    plt.axhline(Strike_Price, color = 'black')
     plt.xlabel('Time', fontsize = 15)
     plt.title('Asset Value Distribution: ' + stock + ' (' + str(year) + ')', fontsize = 15)
 
