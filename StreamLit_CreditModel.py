@@ -253,11 +253,8 @@ elif score == 'KMV-Merton':
     V = MonteCarlo(N, M_MC, Initial_Asset_Value, A_MU, Sigma, T, Strike_Price)[1]
     time = MonteCarlo(N, M_MC, Initial_Asset_Value, A_MU, Sigma, T, Strike_Price)[2]
     
-    VD = []
-    for v in range(M):
-        if V[:, v][-1] < Strike_Price:
-              VD.append(V[:,v])  
-    VD = np.array(VD)
+    mask = V[-1] < Strike_Price
+    VD = V[:, mask] 
     
     
     fig = plt.figure(figsize = (10,6))
