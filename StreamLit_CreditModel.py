@@ -141,7 +141,7 @@ elif score == 'KMV-Merton':
     summary = stock_summary
     summary = summary[['mean', 'std', '25%', '50%', '75%']].apply(lambda x: f"{x:.2f}")
     summary = pd.DataFrame(summary).T
-    summary.rename(columns = {'mean': 'Mean', 'std':'Standard Deviation', '25%':'P25', '50%': 'P50', '75%': 'P75'}, inplace = True)
+    summary.rename(columns = {'mean': 'Mean', 'std':'SD', '25%':'P25', '50%': 'P50', '75%': 'P75'}, inplace = True)
     summary = summary.T
     summary.rename(columns = {'Close': 'Stock Price ($)'}, inplace = True)
     
