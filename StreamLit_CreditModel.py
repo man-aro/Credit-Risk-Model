@@ -132,6 +132,7 @@ elif score == 'Ohlson O-Score':
         st.dataframe(Ohlson_DF_T1)
     with Ohlson_col2:
         st.dataframe(Ohlson_DF_T2)   
+        
 elif score == 'KMV-Merton': 
     
     url_KMVData = "https://raw.githubusercontent.com/man-aro/Credit-Risk-Model/main/KMV_Merton/" + stock + "/KMV_Merton_Data_" + stock + "_" + str(year) + ".csv"
@@ -257,8 +258,9 @@ elif score == 'KMV-Merton':
     survive_mask = V[-1] >= Strike_Price
     
     fig, ax = plt.subplots(figsize=(10, 6))
-    ax.plot(time, V[:, survive_mask], color="orange", alpha=0.05)
-    ax.plot(time, V[:, default_mask], color="black", alpha=0.05)
+    ax.plot(time, V[:, survive_mask], color="orange", alpha=0.05, zorder = 1)
+    ax.plot(time, V[:, default_mask], color="black", alpha=0.2, zorder = 2)
+    ax.axhline(Strike_Price, color="red", linestyle="--")
     ax.set_xlabel("Time", fontsize=15)
     ax.set_title(f"Asset Value Distribution: {stock} ({year})", fontsize=15)
 
