@@ -68,7 +68,7 @@ with SYAD_col2:
 
 #%%Credit Score Data and Computation
 
-score = st.selectbox("Credit Model: ", ('Altman Z-Score', 'Ohlson O-Score', 'KMV-Merton'))
+score = st.selectbox("Credit Model: ", (' ', 'Altman Z-Score', 'Ohlson O-Score', 'KMV-Merton'))
 
 Score_DF = Stock_Year[['Altman_A', 'Altman_B', 'Altman_C', 'Altman_D', 'Altman_E', 
                        'Ohlson_A', 'Ohlson_B', 'Ohlson_C', 'Ohlson_D', 'Ohlson_E', 'Ohlson_F', 
@@ -281,6 +281,4 @@ elif score == 'KMV-Merton':
    
 else:
     st.print('Please Select an Credit Score Model.')
-    
-
 
