@@ -245,6 +245,8 @@ KMV_2 = KMV_Results.iloc[3:]
 
 KMV_col1, KMV_col2 = st.columns(2)
 with KMV_col1:
-    st.dataframe(values)
+    st.dataframe(KMV_1)
 with KMV_col2:
-    st.dataframe(summary) 
+    st.dataframe(KMV_2) 
+
+
