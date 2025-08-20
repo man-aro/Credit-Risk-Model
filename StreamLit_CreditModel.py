@@ -280,5 +280,5 @@ elif score == 'KMV-Merton':
         st.dataframe(KMV_2, use_container_width = True) 
    
 else:
-    st.print('Please Select an Credit Score Model.')
+    st.write('Please Select an Credit Score Model.')
 
