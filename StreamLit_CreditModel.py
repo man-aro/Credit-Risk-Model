@@ -103,9 +103,9 @@ if score == 'Altman Z-Score':
     
     Altman_col1, Altman_col2 = st.columns(2)
     with Altman_col1:
-        st.dataframe(Altman_DF_T1)
+        st.dataframe(Altman_DF_T1, use_container_width = True)
     with Altman_col2:
-        st.dataframe(Altman_DF_T2)
+        st.dataframe(Altman_DF_T2, use_container_width = True)
 
     
 elif score == 'Ohlson O-Score':
@@ -129,9 +129,9 @@ elif score == 'Ohlson O-Score':
     
     Ohlson_col1, Ohlson_col2 = st.columns(2)
     with Ohlson_col1:
-        st.dataframe(Ohlson_DF_T1)
+        st.dataframe(Ohlson_DF_T1, use_container_width = True)
     with Ohlson_col2:
-        st.dataframe(Ohlson_DF_T2)   
+        st.dataframe(Ohlson_DF_T2, use_container_width = True)   
         
 elif score == 'KMV-Merton': 
     
@@ -161,9 +161,9 @@ elif score == 'KMV-Merton':
     
     Sum_col1, Sum_col2 = st.columns(2)
     with Sum_col1:
-        st.dataframe(values)
+        st.dataframe(values, use_container_width = True)
     with Sum_col2:
-        st.dataframe(summary) 
+        st.dataframe(summary, use_container_width = True) 
     
     N = len(KMVData) 
     MktCap = KMVData['marketCapitalization'].unique()[0] #Current Market Cap
@@ -275,9 +275,9 @@ elif score == 'KMV-Merton':
     
     KMV_col1, KMV_col2 = st.columns(2)
     with KMV_col1:
-        st.dataframe(KMV_1)
+        st.dataframe(KMV_1, use_container_width = True)
     with KMV_col2:
-        st.dataframe(KMV_2) 
+        st.dataframe(KMV_2, use_container_width = True) 
    
 else:
     st.print('Please Select an Credit Score Model.')
