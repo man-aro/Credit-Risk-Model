@@ -225,7 +225,7 @@ elif score == 'KMV-Merton':
     PD_B = (A_MU - 0.5*Sigma**2)*T #d2
     PD_C = Sigma*np.sqrt(T)
     
-    PD_Merton = norm.cdf(-(PD_A + PD_B)/PD_C)[0] * 100
+    PD_Merton = norm.cdf(-(PD_A + PD_B)/PD_C) * 100
     ProbDef_Merton = f"{PD_Merton:.2f}"
     
     st.write("Optimisation Iterations = 50, Monte Carlo Simulations = 1000, Time Steps = 252.")
