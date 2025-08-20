@@ -217,14 +217,14 @@ elif score == 'KMV-Merton':
     A_MU = Annual_MU[-1]
     Annual_Drift = f"{A_MU:.2f}"
     Initial_Asset_Value = X[-1]
-    IVA = f"{Initial_Asset_Value:.2f}"
+    IVA = f"{Initial_Asset_Value:.2e}"
     
     PD_A = np.log(Initial_Asset_Value/Strike_Price)
     PD_B = (Rate - 0.5*Sigma**2)*T #d2
     PD_C = Sigma*np.sqrt(T)
     
     PD_Merton = norm.cdf(-(PD_A + PD_B)/PD_C)[0] * 100
-    ProbDef_Merton = f"{Initial_Asset_Value:.2f}"
+    ProbDef_Merton = f"{PD_Merton:.2f}"
     
     
     
