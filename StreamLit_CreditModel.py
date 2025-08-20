@@ -245,7 +245,7 @@ elif score == 'KMV-Merton':
         return Prob_Default, V, time
 
     N = 253
-    M_MC = 1000
+    M_MC = 5000
 
     KMV_Prob_Default = MonteCarlo(N, M_MC, Initial_Asset_Value, A_MU, Sigma, T, Strike_Price)[0]
     KMV_Prob = f"{KMV_Prob_Default:.2f}"
@@ -253,9 +253,14 @@ elif score == 'KMV-Merton':
     V = MonteCarlo(N, M_MC, Initial_Asset_Value, A_MU, Sigma, T, Strike_Price)[1]
     time = MonteCarlo(N, M_MC, Initial_Asset_Value, A_MU, Sigma, T, Strike_Price)[2]
     
+    
+        
+    
+    
+    
     fig = plt.figure(figsize = (10,6))
     plt.plot(time, V, color = 'orange')
-    plt.axhline(Strike_Price, color = 'black')
+    plt.axhline(Strike_Price, color = 'red')
     plt.xlabel('Time', fontsize = 15)
     plt.title('Asset Value Distribution: ' + stock + ' (' + str(year) + ')', fontsize = 15)
 
