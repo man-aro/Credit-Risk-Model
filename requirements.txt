@@ -1,7 +1,4 @@
-rstreamlit
+streamlit
 pandas
 matplotlib
-datetime
-yfinance
-statsmodels
 scipy
