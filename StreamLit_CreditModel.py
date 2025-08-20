@@ -254,7 +254,7 @@ elif score == 'KMV-Merton':
     time = MonteCarlo(N, M_MC, Initial_Asset_Value, A_MU, Sigma, T, Strike_Price)[2]
   
     default_mask = V[-1] < Strike_Price
-    survive_mask = ~default_mask
+    survive_mask = V[-1] >= Strike_Price
 
     fig, ax = plt.subplots(figsize=(10, 6))
 
