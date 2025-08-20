@@ -67,7 +67,7 @@ with SYAD_col2:
 
 #%%Credit Score Data and Computation
 
-score = st.selectbox("Select Credit Score: ", ('Altman Z-Score', 'Ohlson O-Score'))
+score = st.selectbox("Select Credit Score: ", ('Altman Z-Score', 'Ohlson O-Score', 'KMV-Merton'))
 
 Score_DF = Stock_Year[['Altman_A', 'Altman_B', 'Altman_C', 'Altman_D', 'Altman_E', 
                        'Ohlson_A', 'Ohlson_B', 'Ohlson_C', 'Ohlson_D', 'Ohlson_E', 'Ohlson_F', 
@@ -131,122 +131,127 @@ elif score == 'Ohlson O-Score':
         st.dataframe(Ohlson_DF_T1)
     with Ohlson_col2:
         st.dataframe(Ohlson_DF_T2)   
-else: 
+elif score == 'KMV-Merton': 
+    url_KMVData = "https://raw.githubusercontent.com/man-aro/Credit-Risk-Model/main/KMV_Merton/" + stock + "/KMV_Merton_Data_" + stock + "_" + str(year) + ".csv"
+    
+    KMVData = pd.read_csv(url_KMVData)
+    
+    stock_summary = KMVData['Close'].describe()
+    
+    summary = stock_summary
+    summary = summary[['mean', 'std', '25%', '50%', '75%']].apply(lambda x: f"{x:.2f}")
+    summary = pd.DataFrame(summary).T
+    summary.rename(columns = {'mean': 'Mean', 'std':'Standard Deviation', '25%':'P25', '50%': 'P50', '75%': 'P75'}, inplace = True)
+    summary = summary.T
+    summary.rename(columns = {'Close': 'Stock Price ($)'}, inplace = True)
+    
+    SD = KMVData['Date'].tolist()[0]
+    ED = KMVData['Date'].tolist()[-1]
+    R = (KMVData['Rf']*100).apply(lambda x: f"{x:.2f}").tolist()[-1]
+    D = KMVData['Strike_Price'].apply(lambda x: f"{x:.2e}").tolist()[-1]
+    MC = KMVData['marketCapitalization'].apply(lambda x: f"{x:.2e}").tolist()[-1]
+    
+    values = pd.DataFrame([SD, ED, R, D, MC]).T
+    values.rename(columns = {0: 'Start Date', 1:'End Date', 2: 'Rf (%)', 3:'Strike Price ($)', 4: 'Mkt Cap ($)'}, inplace = True)
+    values = values.T
+    values.rename(columns = {0: ' '}, inplace = True)
+    
+    Sum_col1, Sum_col2 = st.columns(2)
+    with Sum_col1:
+        st.dataframe(values)
+    with Sum_col2:
+        st.dataframe(summary) 
+    
+    N = len(KMVData) 
+    MktCap = KMVData['marketCapitalization'].unique()[0] #Current Market Cap
+    NumShares = KMVData['numberOfShares'].unique()[0] 
+    Equity = (KMVData['Close']*NumShares).values #Market Cap timeseries (historical)
+    
+    #Strike Price
+    Strike_Price = KMVData['Strike_Price'].unique()[0]
+    
+    #Volatility
+    Annual_Stock_Volatility = np.std(KMVData['Returns'])*np.sqrt(N+1)
+    Initial_Volatility = (Annual_Stock_Volatility*MktCap)/(MktCap + Strike_Price) #Vol in terms of Market Capital
+    
+    #Interest Rate: Assumed constant (current rate)
+    Rate = KMVData[KMVData['Date'] == KMVData['Date'].max()]['Rf'].values
+    
+    #Maturity
+    T = 1 #Maturity (approximately 1)
+    
+    M = 50
+    Sigma_Tt = [Initial_Volatility]
+    Annual_MU = []
+    for m in range(1, M):
+        AI = (Rate + 0.5*Sigma_Tt[m-1]**2)*T
+        BI = (Rate - 0.5*Sigma_Tt[m-1]**2)*T
+        CI = Sigma_Tt[m-1]*np.sqrt(T)
+        DI = Strike_Price*np.exp(-Rate*T)
+        
+        def function(x, Equity):
+            d1 = (np.log(x/Strike_Price) + AI) / CI
+            d2 = (np.log(x/Strike_Price) + BI) / CI
+            return (x*norm.cdf(d1) - DI*norm.cdf(d2)) - Equity
+    
+        X = np.zeros(N)
+        for s in range(N):
+            sol = fsolve(lambda Asset: function(Asset, Equity[s]), x0 = MktCap)
+            X[s] = sol[0]
+        
+        daily_mu = (1/(N-1)) * np.log(X[-1]/X[0])
+        annual_mu = daily_mu/(1/N)
+        Annual_MU.append(annual_mu)
+        
+        Vol = np.zeros(N-1)
+        for v in range(len(Vol)):
+            Vol[v] = (np.log(X[v+1]/X[v]) - daily_mu)**2
+        sigma_tt_new = np.sqrt(np.sum(Vol)/(N-1)) * np.sqrt(N)
+        Sigma_Tt.append(sigma_tt_new)
+        
+        if abs(Sigma_Tt[-2] - Sigma_Tt[-1]) <= 1e-5:
+            break
+        
+    Sigma = Sigma_Tt[-1]
+    Annual_Sigma = f"{Sigma:.2f}"
+    A_MU = Annual_MU[-1]
+    Annual_Drift = f"{A_MU:.2f}"
+    Initial_Asset_Value = X[-1]
+    IVA = f"{Initial_Asset_Value:.2f}"
+    
+    PD_A = np.log(Initial_Asset_Value/Strike_Price)
+    PD_B = (Rate - 0.5*Sigma**2)*T #d2
+    PD_C = Sigma*np.sqrt(T)
+    
+    PD_Merton = norm.cdf(-(PD_A + PD_B)/PD_C)[0] * 100
+    ProbDef_Merton = f"{Initial_Asset_Value:.2f}"
+    
+    
+    
+    
+    
+    KMV_Results = pd.DataFrame([Annual_Drift, Annual_Sigma, IVA, PD_Merton]).T
+    KMV_Results.rename(columns = {0:'Annual Drift', 1:'Annual Sigma', 2:'Asset Value', 3:'Merton Default Prob(%)'}, inplace = True)
+    KMV_Results = KMV_Results.T
+    KMV_Results.rename(columns = {0: ' '}, inplace = True)
+    
+    KMV_1 = KMV_Results.iloc[:3]
+    KMV_2 = KMV_Results.iloc[3:]
+    
+    KMV_col1, KMV_col2 = st.columns(2)
+    with KMV_col1:
+        st.dataframe(KMV_1)
+    with KMV_col2:
+        st.dataframe(KMV_2) 
+        
+    
+    
+    
+    
+    
+else:
     st.print('Please Select an Credit Score Model.')
     
     
-    
-#%%KMV-Merton Model
-
-iterations = st.selectbox("Select Iterations for KMV Merton Model: ", (10, 20 ,30, 40 ,50))
-
-url_KMVData = "https://raw.githubusercontent.com/man-aro/Credit-Risk-Model/main/KMV_Merton/" + stock + "/KMV_Merton_Data_" + stock + "_" + str(year) + ".csv"
-
-KMVData = pd.read_csv(url_KMVData)
-
-stock_summary = KMVData['Close'].describe()
-
-summary = stock_summary
-summary = summary[['mean', 'std', '25%', '50%', '75%']].apply(lambda x: f"{x:.2f}")
-summary = pd.DataFrame(summary).T
-summary.rename(columns = {'mean': 'Mean', 'std':'Standard Deviation', '25%':'P25', '50%': 'P50', '75%': 'P75'}, inplace = True)
-summary = summary.T
-summary.rename(columns = {'Close': 'Stock Price ($)'}, inplace = True)
-
-SD = KMVData['Date'].tolist()[0]
-ED = KMVData['Date'].tolist()[-1]
-R = (KMVData['Rf']*100).apply(lambda x: f"{x:.2f}").tolist()[-1]
-D = KMVData['Strike_Price'].apply(lambda x: f"{x:.2e}").tolist()[-1]
-MC = KMVData['marketCapitalization'].apply(lambda x: f"{x:.2e}").tolist()[-1]
-
-values = pd.DataFrame([SD, ED, R, D, MC]).T
-values.rename(columns = {0: 'Start Date', 1:'End Date', 2: 'Rf (%)', 3:'Strike Price ($)', 4: 'Mkt Cap ($)'}, inplace = True)
-values = values.T
-values.rename(columns = {0: ' '}, inplace = True)
-
-Sum_col1, Sum_col2 = st.columns(2)
-with Sum_col1:
-    st.dataframe(values)
-with Sum_col2:
-    st.dataframe(summary) 
-
-N = len(KMVData) 
-MktCap = KMVData['marketCapitalization'].unique()[0] #Current Market Cap
-NumShares = KMVData['numberOfShares'].unique()[0] 
-Equity = (KMVData['Close']*NumShares).values #Market Cap timeseries (historical)
-
-#Strike Price
-Strike_Price = KMVData['Strike_Price'].unique()[0]
-
-#Volatility
-Annual_Stock_Volatility = np.std(KMVData['Returns'])*np.sqrt(N+1)
-Initial_Volatility = (Annual_Stock_Volatility*MktCap)/(MktCap + Strike_Price) #Vol in terms of Market Capital
-
-#Interest Rate: Assumed constant (current rate)
-Rate = KMVData[KMVData['Date'] == KMVData['Date'].max()]['Rf'].values
-
-#Maturity
-T = 1 #Maturity (approximately 1)
-
-M = iterations
-Sigma_Tt = [Initial_Volatility]
-Annual_MU = []
-for m in range(1, M):
-    AI = (Rate + 0.5*Sigma_Tt[m-1]**2)*T
-    BI = (Rate - 0.5*Sigma_Tt[m-1]**2)*T
-    CI = Sigma_Tt[m-1]*np.sqrt(T)
-    DI = Strike_Price*np.exp(-Rate*T)
-    
-    def function(x, Equity):
-        d1 = (np.log(x/Strike_Price) + AI) / CI
-        d2 = (np.log(x/Strike_Price) + BI) / CI
-        return (x*norm.cdf(d1) - DI*norm.cdf(d2)) - Equity
-
-    X = np.zeros(N)
-    for s in range(N):
-        sol = fsolve(lambda Asset: function(Asset, Equity[s]), x0 = MktCap)
-        X[s] = sol[0]
-    
-    daily_mu = (1/(N-1)) * np.log(X[-1]/X[0])
-    annual_mu = daily_mu/(1/N)
-    Annual_MU.append(annual_mu)
-    
-    Vol = np.zeros(N-1)
-    for v in range(len(Vol)):
-        Vol[v] = (np.log(X[v+1]/X[v]) - daily_mu)**2
-    sigma_tt_new = np.sqrt(np.sum(Vol)/(N-1)) * np.sqrt(N)
-    Sigma_Tt.append(sigma_tt_new)
-    
-    if abs(Sigma_Tt[-2] - Sigma_Tt[-1]) <= 1e-5:
-        break
-    
-Sigma = Sigma_Tt[-1]
-A_MU = Annual_MU[-1]
-Initial_Asset_Value = X[-1]
-IVA = f"{Initial_Asset_Value:.2f}"
-
-PD_A = np.log(Initial_Asset_Value/Strike_Price)
-PD_B = (Rate - 0.5*Sigma**2)*T #d2
-PD_C = Sigma*np.sqrt(T)
-
-PD_Merton = norm.cdf(-(PD_A + PD_B)/PD_C)[0]
-
-
-
-
-
-KMV_Results = pd.DataFrame([A_MU, Sigma, IVA, PD_Merton]).T
-KMV_Results.rename(columns = {0:'Annual Drift', 1:'Annual Sigma', 2:'Asset Value', 3:'Merton Default Prob(%)'}, inplace = True)
-KMV_Results = KMV_Results.T
-KMV_Results.rename(columns = {0: ' '}, inplace = True)
-
-KMV_1 = KMV_Results.iloc[:3]
-KMV_2 = KMV_Results.iloc[3:]
-
-KMV_col1, KMV_col2 = st.columns(2)
-with KMV_col1:
-    st.dataframe(KMV_1)
-with KMV_col2:
-    st.dataframe(KMV_2) 
 
 
