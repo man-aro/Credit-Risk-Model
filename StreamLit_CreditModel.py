@@ -222,7 +222,7 @@ elif score == 'KMV-Merton':
     IVA = f"{Initial_Asset_Value:.2e}"
     
     PD_A = np.log(Initial_Asset_Value/Strike_Price)
-    PD_B = (Rate - 0.5*Sigma**2)*T #d2
+    PD_B = (A_MU - 0.5*Sigma**2)*T #d2
     PD_C = Sigma*np.sqrt(T)
     
     PD_Merton = norm.cdf(-(PD_A + PD_B)/PD_C)[0] * 100
