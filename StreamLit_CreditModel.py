@@ -142,4 +142,29 @@ url_KMVData = "https://raw.githubusercontent.com/man-aro/Credit-Risk-Model/main/
 data = pd.read_csv(url_KMVData)
 
 stock_summary = data['Close'].describe()
-st.dataframe(stock_summary)
+
+summary = stock_summary.T
+summary = summary[['mean', 'std', '25%', '50%', '75%']].apply(lambda x: f"{x:.2f}")
+summary.rename(columns = {'mean': 'Mean', 'std': 'Standard Deviation', '25%': 'P25', '50%': 'P50', '75%': 'P75'}, inplace = True)
+summary = summary.T
+summary.rename(columns = {'Close': 'Stock Price'}, inplace = True)
+
+SD = data['Date'].tolist()[0].apply(lambda x: f"{x:.2f}")
+ED = data['Date'].tolist()[-1]*(100).apply(lambda x: f"{x:.2f}")
+R = data['Rf'].tolist()[-1].apply(lambda x: f"{x:.2f}")
+D = data['Strike_Price'].apply(lambda x: f"{x:.2f}").unique()
+MC = data['marketCapitalization'].apply(lambda x: f"{x:.2e}").unique()
+
+values = pd.DataFrame([SD, ED, R, D, MC]).T
+values.rename(columns = {0: 'Start Date', 1:'End Date', 2: 'Rf (%)', 3:'Strike Price ($)', 4: 'Mkt Cap ($)'}, inplace = True)
+values = values.T
+values.rename(columns = {0: ' '}, inplace = True)
+
+Sum_col1, Sum_col2 = st.columns(2)
+with Sum_col1:
+    st.dataframe(values)
+with Sum_col2:
+    st.dataframe(summary) 
+
+
+
