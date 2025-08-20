@@ -228,8 +228,7 @@ elif score == 'KMV-Merton':
     PD_Merton = norm.cdf(-(PD_A + PD_B)/PD_C)[0] * 100
     ProbDef_Merton = f"{PD_Merton:.2f}"
     
-    st.write("Optimisation Iterations = 50.")
-    st.write("Monte Carlo Simulations = 1000.")
+    st.write("Optimisation Iterations = 50, Monte Carlo Simulations = 1000, Time Steps = 252.")
     
     def MonteCarlo(N, M, V0, mu, sigma, T, Strike_Price):
         dt = T/N
@@ -243,13 +242,25 @@ elif score == 'KMV-Merton':
             time[i] = i*dt
         
         Prob_Default = ((V[-1] < Strike_Price).sum()/M) * 100
-        return Prob_Default
+        return Prob_Default, V, time
 
     N = 253
     M_MC = 1000
 
-    KMV_Prob_Default = MonteCarlo(N, M_MC, Initial_Asset_Value, A_MU, Sigma, T, Strike_Price)
+    KMV_Prob_Default = MonteCarlo(N, M_MC, Initial_Asset_Value, A_MU, Sigma, T, Strike_Price)[0]
     KMV_Prob = f"{KMV_Prob_Default:.2f}"
+
+    V = MonteCarlo(N, M_MC, Initial_Asset_Value, A_MU, Sigma, T, Strike_Price)[1]
+    time = MonteCarlo(N, M_MC, Initial_Asset_Value, A_MU, Sigma, T, Strike_Price)[2]
+    
+    fig = plt.figure(figsize = (10,6))
+    plt.plot(time, V, color = 'orange')
+    #plt.axhline(Strike_Price, color = 'black')
+    plt.xlabel('Time', fontsize = 15)
+    plt.title('Asset Value Distribution: ' + stock + ' (' + str(year) + ')', fontsize = 15)
+
+    st.pyplot(fig)
+
 
     KMV_Results = pd.DataFrame([Annual_Drift, Annual_Sigma, IVA, ProbDef_Merton, KMV_Prob]).T
     KMV_Results.rename(columns = {0:'Annual Drift', 1:'Annual Sigma', 2:'Asset Value', 3:'Default Prob (%)', 4: 'MC Default Prob (%)'}, inplace = True)
